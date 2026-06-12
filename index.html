@@ -13,53 +13,34 @@
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   html,body { height:100%; overflow:hidden; }
-  body {
-    background:#0b0f1a; color:#e8ecf4;
-    font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",sans-serif;
-    display:flex; flex-direction:column;
-    padding-top:env(safe-area-inset-top); padding-bottom:env(safe-area-inset-bottom);
-  }
+  body { background:#0b0f1a; color:#e8ecf4; font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Noto Sans JP",sans-serif; display:flex; flex-direction:column; padding-top:env(safe-area-inset-top); padding-bottom:env(safe-area-inset-bottom); }
   header { padding:14px 18px 6px; display:flex; align-items:center; justify-content:space-between; }
   header h1 { font-size:17px; font-weight:700; letter-spacing:.5px; }
   header h1 span { background:linear-gradient(90deg,#7dd3fc,#c084fc); -webkit-background-clip:text; background-clip:text; color:transparent; }
-  #connState { font-size:11px; color:#8b93a7; text-align:right; line-height:1.4; }
-
+  #connState { font-size:11px; color:#8b93a7; text-align:right; }
   main { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:8px 16px 0; min-height:0; }
   #orbWrap { position:relative; width:150px; height:150px; margin-top:8px; flex-shrink:0; }
-  #orb {
-    position:absolute; inset:0; border-radius:50%;
-    background:radial-gradient(circle at 32% 30%, #38bdf8 0%, #6366f1 55%, #1e1b4b 100%);
-    box-shadow:0 0 50px rgba(99,102,241,.45);
-    display:flex; align-items:center; justify-content:center;
-    font-size:15px; font-weight:600; color:#fff; cursor:pointer;
-    transition:transform .25s, box-shadow .4s; user-select:none; -webkit-user-select:none; text-align:center; padding:0 12px;
-  }
+  #orb { position:absolute; inset:0; border-radius:50%; background:radial-gradient(circle at 32% 30%, #38bdf8 0%, #6366f1 55%, #1e1b4b 100%); box-shadow:0 0 50px rgba(99,102,241,.45); display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:600; color:#fff; cursor:pointer; transition:transform .25s, box-shadow .4s; user-select:none; -webkit-user-select:none; text-align:center; padding:0 12px; }
   #orb:active { transform:scale(.95); }
   .ring { position:absolute; inset:0; border-radius:50%; border:2px solid rgba(125,211,252,.5); opacity:0; pointer-events:none; }
   body.listening .ring { animation:pulse 2.2s ease-out infinite; }
   body.listening .ring.r2 { animation-delay:1.1s; }
   @keyframes pulse { 0%{transform:scale(1);opacity:.7} 100%{transform:scale(1.5);opacity:0} }
-  body.hearing #orb { box-shadow:0 0 60px rgba(56,189,248,.85); }
+  body.hearing #orb { box-shadow:0 0 62px rgba(56,189,248,.9); }
+  body.transcribing #orb { box-shadow:0 0 60px rgba(34,211,238,.7); }
   body.thinking #orb { box-shadow:0 0 65px rgba(251,191,36,.7); background:radial-gradient(circle at 32% 30%, #fbbf24 0%, #b45309 60%, #422006 100%); }
   body.speaking #orb { box-shadow:0 0 70px rgba(192,132,252,.85); background:radial-gradient(circle at 32% 30%, #c084fc 0%, #8b5cf6 55%, #312e81 100%); }
   body.connecting #orb { animation:breathe 1.2s ease-in-out infinite; }
   @keyframes breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
   #hint { margin-top:12px; font-size:13px; color:#8b93a7; text-align:center; min-height:18px; padding:0 10px; }
-  #interim { margin-top:4px; font-size:13px; color:#7dd3fc; text-align:center; min-height:18px; font-style:italic; }
-
-  #transcript {
-    flex:1; width:100%; max-width:560px; margin-top:10px; overflow-y:auto;
-    -webkit-overflow-scrolling:touch; display:flex; flex-direction:column; gap:8px; padding-bottom:10px; min-height:0;
-  }
+  #transcript { flex:1; width:100%; max-width:560px; margin-top:12px; overflow-y:auto; -webkit-overflow-scrolling:touch; display:flex; flex-direction:column; gap:8px; padding-bottom:10px; min-height:0; }
   .msg { max-width:86%; padding:9px 13px; border-radius:16px; font-size:14px; line-height:1.5; white-space:pre-wrap; word-break:break-word; transition:opacity .2s; }
   .msg.user { align-self:flex-end; background:#1d4ed8; border-bottom-right-radius:5px; }
-  .msg.user.pending { opacity:.45; font-style:italic; }
+  .msg.user.pending { opacity:.5; font-style:italic; }
   .msg.ai { align-self:flex-start; background:#1f2637; border-bottom-left-radius:5px; }
-
   footer { padding:10px 14px 14px; display:flex; gap:8px; align-items:center; }
   .chip { background:#1f2637; border:1px solid #2e3850; color:#e8ecf4; border-radius:14px; padding:10px 12px; font-size:13px; cursor:pointer; white-space:nowrap; }
   #textIn { flex:1; min-width:0; background:#141a2a; border:1px solid #2e3850; border-radius:14px; padding:10px 13px; font-size:16px; color:#e8ecf4; outline:none; }
-
   .overlay { position:fixed; inset:0; background:rgba(5,8,16,.82); backdrop-filter:blur(6px); display:none; align-items:flex-end; justify-content:center; z-index:50; }
   .overlay.show { display:flex; }
   .sheet { background:#121829; border-radius:20px 20px 0 0; width:100%; max-width:600px; max-height:86vh; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:20px 18px calc(22px + env(safe-area-inset-bottom)); }
@@ -67,14 +48,12 @@
   .sheet p { font-size:13px; color:#a7afc4; line-height:1.7; margin-bottom:10px; }
   .sheet label { font-size:12px; color:#8b93a7; display:block; margin:12px 0 5px; }
   .sheet input, .sheet select { width:100%; background:#0d1322; border:1px solid #2e3850; border-radius:12px; padding:12px; font-size:16px; color:#e8ecf4; margin-bottom:6px; outline:none; }
-  .ok { color:#34d399; } .bad { color:#f87171; }
   .btnPrimary { width:100%; background:linear-gradient(90deg,#2563eb,#7c3aed); color:#fff; border:none; border-radius:12px; padding:13px; font-size:15px; font-weight:700; cursor:pointer; margin-top:10px; }
   .btnGhost { width:100%; background:none; border:none; color:#8b93a7; padding:12px; font-size:13px; cursor:pointer; }
   .vItem { display:flex; justify-content:space-between; align-items:center; padding:11px 6px; border-bottom:1px solid #1e2536; cursor:pointer; font-size:14px; }
   .vItem small { color:#8b93a7; font-size:12px; }
   .vItem.sel { color:#7dd3fc; font-weight:700; }
   #toast { position:fixed; top:calc(12px + env(safe-area-inset-top)); left:50%; transform:translateX(-50%); background:#7f1d1d; color:#fff; padding:9px 16px; border-radius:12px; font-size:13px; display:none; z-index:99; max-width:90%; text-align:center; }
-  .langBtn.en { color:#fbbf24; }
 </style>
 </head>
 <body>
@@ -85,11 +64,9 @@
 <main>
   <div id="orbWrap"><div class="ring"></div><div class="ring r2"></div><div id="orb">話す</div></div>
   <div id="hint">タップして会話開始</div>
-  <div id="interim"></div>
   <div id="transcript"></div>
 </main>
 <footer>
-  <button class="chip langBtn" id="langBtn">🇯🇵 日本語</button>
   <button class="chip" id="voiceBtn">🎭 Puck</button>
   <input id="textIn" placeholder="文字でも送れる" autocomplete="off">
   <button class="chip" id="settingsBtn">⚙️</button>
@@ -97,13 +74,12 @@
 
 <div class="overlay" id="setupOv"><div class="sheet">
   <h2>🔑 初回セットアップ</h2>
-  <p>キーは2つ。どちらもこのiPhoneの中にだけ保存される（外には出ない）。</p>
+  <p>キーは2つ。どちらもこのiPhoneの中にだけ保存される。</p>
   <label>🧠 Claude APIキー（頭脳・必須） — sk-ant-...</label>
   <input id="claudeKeyIn" placeholder="sk-ant-..." autocomplete="off">
-  <label>🔊 Gemini APIキー（声・必須） — AIza...</label>
+  <label>🔊🎤 Gemini APIキー（耳と声・必須） — AIza...</label>
   <input id="geminiKeyIn" placeholder="AIza..." autocomplete="off">
   <button class="btnPrimary" id="saveSetup">保存して始める</button>
-  <p style="margin-top:12px">Claudeキー＝console.anthropic.com の API keys / Geminiキー＝クラウドからもらったやつ</p>
 </div></div>
 
 <div class="overlay" id="voiceOv"><div class="sheet">
@@ -117,13 +93,19 @@
   <h2>⚙️ 設定</h2>
   <label>🧠 頭脳モデル（Claude）</label>
   <select id="modelSel"></select>
+  <label>🎤 喋り終わりの無音（秒）— 短いほどテンポ良い／長いほど途切れにくい</label>
+  <select id="silSel">
+    <option value="1000">1.0秒（速い）</option>
+    <option value="1500">1.5秒（標準）</option>
+    <option value="2000">2.0秒（ゆっくり）</option>
+  </select>
   <label>🧠 Claude APIキー（変更）</label>
   <input id="claudeKeyIn2" placeholder="現在のキーを使用中" autocomplete="off">
   <label>🔊 Gemini APIキー（変更）</label>
   <input id="geminiKeyIn2" placeholder="現在のキーを使用中" autocomplete="off">
   <button class="btnPrimary" id="saveSet">保存</button>
-  <p style="margin-top:14px"><b>仕組み</b><br>喋る→iPhoneが文字化→<b>Claudeが文脈で誤認識を直す</b>（あなたの吹き出しが直った文に変わる）→Claudeが返答→<b>Geminiの声</b>で読み上げ。AIが喋り終わると自動でまた聞き取りに戻る。</p>
-  <p id="verLine" style="color:#5b6378">TalkMate P2 (Claude頭脳 + Gemini音声)</p>
+  <p style="margin-top:14px"><b>仕組み</b><br>喋る→<b>Geminiが高精度で文字起こし</b>→<b>Claudeが文脈で補正＋返答</b>→<b>Geminiの声</b>で読み上げ→また聞く。喋り終わって少し黙ると自動で次に進む。</p>
+  <p id="verLine" style="color:#5b6378">TalkMate P2.1 (Gemini耳 + Claude頭脳 + Gemini声)</p>
   <button class="btnGhost" data-close>閉じる</button>
 </div></div>
 
@@ -131,7 +113,6 @@
 
 <script type="module">
 import { GoogleGenAI, Modality } from 'https://esm.run/@google/genai@1';
-// Claudeは fetch 直叩き（ブラウザのNode依存問題を避ける）。anthropic-dangerous-direct-browser-access で CORS許可
 
 /* ================== 設定 ================== */
 const CLAUDE_MODELS = [
@@ -139,6 +120,8 @@ const CLAUDE_MODELS = [
   { id:'claude-opus-4-8',  label:'Opus 4.8（高品質・中コスト）' },
   { id:'claude-fable-5',   label:'Fable 5（最高峰・高コスト・やや遅い）' },
 ];
+const STT_MODEL = 'gemini-2.5-flash';
+const TTS_LIVE_MODEL = 'gemini-2.5-flash-native-audio-preview-12-2025';
 const VOICES = [
   ['Puck','Upbeat','元気'],['Achird','Friendly','親しみやすい'],['Sulafat','Warm','温かい'],
   ['Leda','Youthful','若々しい'],['Zephyr','Bright','明るい'],['Autonoe','Bright','明るい2'],
@@ -151,16 +134,14 @@ const VOICES = [
   ['Charon','Informative','解説調'],['Rasalgethi','Informative','知的'],['Sadaltager','Knowledgeable','物知り'],
   ['Fenrir','Excitable','テンション高め'],['Enceladus','Breathy','吐息まじり'],['Algenib','Gravelly','ハスキー'],
 ];
-// Geminiは「読み上げ専用ロボット」に徹させる
-const GEMINI_TTS_SYSTEM = `You are a text-to-speech voice engine, not a conversational AI. Read aloud the user's message EXACTLY as written, verbatim, in a natural friendly human voice. Never answer it, never comment, never translate, never add or omit anything. Your only job is to speak the provided text as-is.`;
-// Claudeが頭脳。発話補正＋返答を1回で返す
+const GEMINI_TTS_SYSTEM = `You are a text-to-speech voice engine, not a conversational AI. Read aloud the user's message EXACTLY as written, verbatim, in a natural friendly human voice. Never answer it, never comment, never translate, never add or omit anything.`;
 const CLAUDE_SYSTEM = `You are TalkMate, a warm, sharp, bilingual voice companion — like a smart, easygoing friend. You are having a spoken conversation with the user (Taku).
 
-The user's incoming message is RAW speech-to-text from a phone microphone. It may contain recognition errors, wrong homophones, dropped particles, missing punctuation, or words merged/split incorrectly.
+The user's incoming message was transcribed from speech by an automatic system. It is usually accurate but may contain occasional recognition errors, wrong homophones, or missing punctuation.
 
 Each turn, do two things:
-1. "corrected" — Rewrite the user's utterance into what they most likely actually said. Use the conversation context to fix recognition errors and add natural punctuation. Keep their original language and intent. This is a cleanup, not an answer.
-2. "reply" — Your spoken response to the corrected utterance. Mirror the user's language (Japanese in → Japanese out, English in → English out). Keep it short and natural (usually 1-3 sentences) since it will be read aloud. No markdown, no emoji, no bullet lists, no headings.
+1. "corrected" — Lightly clean up the user's utterance into what they most likely said (fix obvious recognition errors, add natural punctuation). Keep their wording, language, and intent. If it's already fine, return it mostly as-is. This is a cleanup, not an answer.
+2. "reply" — Your spoken response to the corrected utterance. Mirror the user's language (Japanese in → Japanese out, English in → English out). Keep it short and natural (usually 1-3 sentences) since it will be read aloud. No markdown, no emoji, no bullet lists.
 
 Output ONLY a single JSON object, with no text before or after it:
 {"corrected": "<cleaned-up user utterance>", "reply": "<your spoken reply>"}`;
@@ -168,283 +149,225 @@ Output ONLY a single JSON object, with no text before or after it:
 const LS = localStorage;
 const state = {
   claudeKey: LS.getItem('tm_claude_key') || '',
-  geminiKey: LS.getItem('tm_gemini_key') || LS.getItem('tm_key') || '', // 旧キー名から移行
+  geminiKey: LS.getItem('tm_gemini_key') || LS.getItem('tm_key') || '',
   model: LS.getItem('tm_model') || CLAUDE_MODELS[0].id,
   voice: LS.getItem('tm_voice') || 'Puck',
-  lang:  LS.getItem('tm_lang')  || 'ja-JP',
+  silence: parseInt(LS.getItem('tm_silence')||'1500'),
 };
-if(!CLAUDE_MODELS.some(m=>m.id===state.model)) state.model = CLAUDE_MODELS[0].id; // 旧Geminiモデル名の掃除
+if(!CLAUDE_MODELS.some(m=>m.id===state.model)) state.model = CLAUDE_MODELS[0].id;
 
 /* ================== DOM ================== */
 const $ = id => document.getElementById(id);
-const orb=$('orb'), hint=$('hint'), interimEl=$('interim'), connState=$('connState'), transcript=$('transcript');
+const orb=$('orb'), hint=$('hint'), connState=$('connState'), transcript=$('transcript');
 function toast(m,ms){ const t=$('toast'); t.textContent=m; t.style.display='block'; clearTimeout(t._h); t._h=setTimeout(()=>t.style.display='none',ms||5000); }
 function setMode(mode){
   document.body.className = (mode==='idle') ? '' : mode;
   const map = {
-    idle:[ '話す','タップして会話開始','未接続'],
-    connecting:['…','接続中…','接続中'],
-    listening:['🎤','聞いてるよ、どうぞ','会話中✓'],
-    hearing:['🎤','聞き取り中…','会話中✓'],
+    idle:['話す','タップして会話開始','未接続'],
+    connecting:['…','準備中…','接続中'],
+    listening:['🎤','どうぞ、話して','会話中✓'],
+    hearing:['🎤','聞いてる…','会話中✓'],
+    transcribing:['📝','文字にしてる…','会話中✓'],
     thinking:['💭','考えてる…','会話中✓'],
     speaking:['🔊','話し中…','会話中✓'],
   };
-  const m = map[mode]||map.idle;
-  orb.textContent=m[0]; hint.textContent=m[1]; connState.textContent=m[2];
-  if(mode!=='hearing') interimEl.textContent='';
+  const m=map[mode]||map.idle; orb.textContent=m[0]; hint.textContent=m[1]; connState.textContent=m[2];
 }
 
-/* ================== Gemini 音声出力（読み上げ専用） ================== */
+/* ================== 共通: 音声再生（Gemini Liveの声） ================== */
 let spkCtx=null, playQueue=[], nextT=0;
 function ensureSpk(){ if(!spkCtx) spkCtx=new (window.AudioContext||window.webkitAudioContext)(); if(spkCtx.state==='suspended') spkCtx.resume(); }
 function b64ToI16(b64){ const bin=atob(b64); const u8=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i); return new Int16Array(u8.buffer); }
 function playChunk(b64){
   ensureSpk();
   const i16=b64ToI16(b64); if(!i16.length) return;
-  const f=new Float32Array(i16.length);
-  for(let i=0;i<i16.length;i++) f[i]=i16[i]/32768;
+  const f=new Float32Array(i16.length); for(let i=0;i<i16.length;i++) f[i]=i16[i]/32768;
   const buf=spkCtx.createBuffer(1,f.length,24000); buf.getChannelData(0).set(f);
   const s=spkCtx.createBufferSource(); s.buffer=buf; s.connect(spkCtx.destination);
-  const t=Math.max(spkCtx.currentTime+0.05, nextT);
-  s.start(t); nextT=t+buf.duration; playQueue.push(s);
+  const t=Math.max(spkCtx.currentTime+0.05, nextT); s.start(t); nextT=t+buf.duration; playQueue.push(s);
   s.onended=()=>{ playQueue=playQueue.filter(x=>x!==s); if(!playQueue.length) onSpeakDone(); };
   setMode('speaking');
 }
 function stopPlayback(){ playQueue.forEach(s=>{try{s.stop()}catch(e){}}); playQueue=[]; nextT=0; }
 
 /* ================== トランスクリプト ================== */
-function addMsg(role, text, cls){
-  const d=document.createElement('div'); d.className='msg '+role+(cls?' '+cls:''); d.textContent=text;
-  transcript.appendChild(d);
-  while(transcript.children.length>80) transcript.removeChild(transcript.firstChild);
-  transcript.scrollTop = transcript.scrollHeight;
-  return d;
-}
+function addMsg(role, text, cls){ const d=document.createElement('div'); d.className='msg '+role+(cls?' '+cls:''); d.textContent=text; transcript.appendChild(d); while(transcript.children.length>80) transcript.removeChild(transcript.firstChild); transcript.scrollTop=transcript.scrollHeight; return d; }
 
-/* ================== Gemini Live（読み上げ用セッション） ================== */
+/* ================== Gemini Live（読み上げ専用） ================== */
 let ai=null, gSession=null, gReady=false, wantLive=false, reconnects=0, wakeLock=null;
-let speaking=false;
-
+let speaking=false, speakWatch=null;
 async function geminiConnect(){
   ai = new GoogleGenAI({ apiKey: state.geminiKey });
   gSession = await ai.live.connect({
-    model:'gemini-2.5-flash-native-audio-preview-12-2025',
-    config:{
-      responseModalities:[Modality.AUDIO],
-      speechConfig:{ voiceConfig:{ prebuiltVoiceConfig:{ voiceName: state.voice } } },
-      systemInstruction: GEMINI_TTS_SYSTEM,
-    },
+    model: TTS_LIVE_MODEL,
+    config:{ responseModalities:[Modality.AUDIO], speechConfig:{ voiceConfig:{ prebuiltVoiceConfig:{ voiceName: state.voice } } }, systemInstruction: GEMINI_TTS_SYSTEM },
     callbacks:{
-      onopen: ()=>{ gReady=true; reconnects=0; },
-      onmessage: m=>{
-        const sc=m.serverContent; if(!sc) return;
-        const parts=(sc.modelTurn&&sc.modelTurn.parts)||[];
-        for(const p of parts){ if(p.inlineData&&p.inlineData.data) playChunk(p.inlineData.data); }
-        if(sc.turnComplete && !playQueue.length) onSpeakDone();
-      },
-      onerror: e=>{ console.error(e); toast('音声(Gemini)エラー: '+(e.message||e)); },
-      onclose: ()=>{ gReady=false; gSession=null;
-        if(wantLive && reconnects++<4){ setTimeout(()=>{ if(wantLive) geminiConnect().catch(()=>{}); }, 600); } },
+      onopen:()=>{ gReady=true; reconnects=0; },
+      onmessage:m=>{ const sc=m.serverContent; if(!sc) return; const parts=(sc.modelTurn&&sc.modelTurn.parts)||[]; for(const p of parts){ if(p.inlineData&&p.inlineData.data) playChunk(p.inlineData.data); } if(sc.turnComplete && !playQueue.length) onSpeakDone(); },
+      onerror:e=>{ console.error(e); },
+      onclose:()=>{ gReady=false; gSession=null; if(wantLive && reconnects++<4){ setTimeout(()=>{ if(wantLive) geminiConnect().catch(()=>{}); }, 600); } },
     },
   });
 }
 function speak(text){
-  if(!text) { onSpeakDone(); return; }
+  if(!text){ onSpeakDone(); return; }
   speaking=true; setMode('speaking');
-  if(gSession && gReady){
-    try{ gSession.sendClientContent({ turns:[{ role:'user', parts:[{ text }] }], turnComplete:true }); }
-    catch(e){ onSpeakDone(); }
-  } else { onSpeakDone(); } // Gemini未接続でも会話は続行（無音）
+  clearTimeout(speakWatch);
+  speakWatch = setTimeout(()=>{ if(speaking){ stopPlayback(); onSpeakDone(); } }, 15000); // 詰まり保険
+  if(gSession && gReady){ try{ gSession.sendClientContent({ turns:[{ role:'user', parts:[{ text }] }], turnComplete:true }); }catch(e){ onSpeakDone(); } }
+  else { onSpeakDone(); }
 }
-function onSpeakDone(){
-  if(!speaking) return;
-  speaking=false;
-  if(wantLive) maybeResumeListening();
+function onSpeakDone(){ if(!speaking) return; clearTimeout(speakWatch); speaking=false; if(wantLive) startRecording(); }
+
+/* ================== マイク録音 + 無音検出 ================== */
+let micStream=null, micCtx=null, micNode=null;
+let recording=false, chunks=[], speechStarted=false, silenceAt=0, micRate=48000;
+let busy=false;
+
+async function micSetup(){
+  micStream = await navigator.mediaDevices.getUserMedia({ audio:{ echoCancellation:true, noiseSuppression:true, autoGainControl:true } });
+  micCtx = new (window.AudioContext||window.webkitAudioContext)();
+  if(micCtx.state==='suspended') await micCtx.resume();
+  micRate = micCtx.sampleRate;
+  const src = micCtx.createMediaStreamSource(micStream);
+  const code = `class P extends AudioWorkletProcessor{ process(inp){ const c=inp[0]&&inp[0][0]; if(c) this.port.postMessage(c.slice(0)); return true; } } registerProcessor('tm-cap',P);`;
+  const url = URL.createObjectURL(new Blob([code],{type:'application/javascript'}));
+  await micCtx.audioWorklet.addModule(url);
+  micNode = new AudioWorkletNode(micCtx,'tm-cap');
+  src.connect(micNode);
+  micNode.port.onmessage = e=>{
+    if(!recording) return;
+    const buf = e.data;
+    chunks.push(buf);
+    let sum=0; for(let i=0;i<buf.length;i++) sum+=buf[i]*buf[i];
+    const rms = Math.sqrt(sum/buf.length);
+    const now = performance.now();
+    if(rms > 0.018){ speechStarted=true; silenceAt=0; if(document.body.className!=='hearing') setMode('hearing'); }
+    else if(speechStarted){
+      if(!silenceAt) silenceAt=now;
+      else if(now - silenceAt > state.silence){ finishUtterance(); }
+    }
+    // 安全: 30秒で強制区切り
+    if(chunks.length * (buf.length/micRate) > 30){ if(speechStarted) finishUtterance(); else { chunks=[]; } }
+  };
+}
+function startRecording(){
+  if(!wantLive || busy || speaking) return;
+  chunks=[]; speechStarted=false; silenceAt=0; recording=true;
+  setMode('listening');
+}
+function buildWav(float32, rate){
+  const len=float32.length, buf=new ArrayBuffer(44+len*2), v=new DataView(buf);
+  const ws=(o,s)=>{ for(let i=0;i<s.length;i++) v.setUint8(o+i, s.charCodeAt(i)); };
+  ws(0,'RIFF'); v.setUint32(4,36+len*2,true); ws(8,'WAVE'); ws(12,'fmt '); v.setUint32(16,16,true);
+  v.setUint16(20,1,true); v.setUint16(22,1,true); v.setUint32(24,rate,true); v.setUint32(28,rate*2,true);
+  v.setUint16(32,2,true); v.setUint16(34,16,true); ws(36,'data'); v.setUint32(40,len*2,true);
+  let o=44; for(let i=0;i<len;i++){ let s=Math.max(-1,Math.min(1,float32[i])); v.setInt16(o, s<0?s*0x8000:s*0x7FFF, true); o+=2; }
+  return new Blob([buf],{type:'audio/wav'});
+}
+function blobToB64(blob){ return new Promise(res=>{ const r=new FileReader(); r.onloadend=()=>res(r.result.split(',')[1]); r.readAsDataURL(blob); }); }
+
+async function finishUtterance(){
+  if(!recording) return;
+  recording=false;
+  const all=chunks; chunks=[];
+  let total=0; for(const c of all) total+=c.length;
+  if(total < micRate*0.3){ startRecording(); return; } // 0.3秒未満は雑音、捨てて再録
+  const merged=new Float32Array(total); let o=0; for(const c of all){ merged.set(c,o); o+=c.length; }
+  busy=true; setMode('transcribing');
+  let heard='';
+  try{
+    const wav = buildWav(merged, micRate);
+    const b64 = await blobToB64(wav);
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${STT_MODEL}:generateContent?key=${encodeURIComponent(state.geminiKey)}`, {
+      method:'POST', headers:{'content-type':'application/json'},
+      body: JSON.stringify({ contents:[{ parts:[ { inlineData:{ mimeType:'audio/wav', data:b64 } }, { text:'Transcribe this audio exactly in the language spoken. Output ONLY the transcription text, no quotes, no extra words. If silent or unintelligible, output an empty string.' } ] }] }),
+    });
+    const j = await res.json().catch(()=>({}));
+    if(res.ok){ heard = (j.candidates&&j.candidates[0]&&j.candidates[0].content&&j.candidates[0].content.parts&&j.candidates[0].content.parts[0]&&j.candidates[0].content.parts[0].text||'').trim(); }
+    else { toast('文字起こしエラー: '+((j.error&&j.error.message)||res.status)); }
+  }catch(e){ toast('文字起こし失敗: '+(e.message||e)); }
+  if(!heard){ busy=false; startRecording(); return; } // 無音→そのまま次の録音へ
+  const pend = addMsg('user', heard, 'pending');
+  await askClaude(heard, pend);
 }
 
 /* ================== Claude 頭脳 ================== */
-let claudeMessages=[]; // {role:'user'|'assistant', content:string}
-let busy=false;
-function initClaude(){ /* fetch直叩きなので初期化不要 */ }
-
-function parseClaude(text){
-  // JSONを取り出す（前後にゴミがあっても拾う）
-  try{ return JSON.parse(text); }catch(e){}
-  const m = text.match(/\{[\s\S]*\}/);
-  if(m){ try{ return JSON.parse(m[0]); }catch(e){} }
-  return null;
-}
-
-async function askClaude(raw, pendingEl){
-  busy=true; setMode('thinking');
+let claudeMessages=[];
+function parseClaude(text){ try{ return JSON.parse(text); }catch(e){} const m=text.match(/\{[\s\S]*\}/); if(m){ try{ return JSON.parse(m[0]); }catch(e){} } return null; }
+async function askClaude(raw, pendEl){
+  setMode('thinking');
   const msgs = claudeMessages.concat([{ role:'user', content: raw }]);
   let data=null, errMsg='';
   try{
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method:'POST',
-      headers:{
-        'content-type':'application/json',
-        'x-api-key': state.claudeKey,
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true',
-      },
+      headers:{ 'content-type':'application/json', 'x-api-key': state.claudeKey, 'anthropic-version':'2023-06-01', 'anthropic-dangerous-direct-browser-access':'true' },
       body: JSON.stringify({ model: state.model, max_tokens:2048, system: CLAUDE_SYSTEM, messages: msgs }),
     });
     const j = await res.json().catch(()=>({}));
     if(!res.ok){ const e=new Error((j.error&&j.error.message)||('HTTP '+res.status)); e.status=res.status; throw e; }
-    const txt = (j.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
-    data = parseClaude(txt);
-    if(!data) data = { corrected: raw, reply: txt.slice(0,500) }; // パース失敗時フォールバック
+    const txt=(j.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+    data = parseClaude(txt) || { corrected: raw, reply: txt.slice(0,500) };
   }catch(err){
-    errMsg = (err && err.status===401) ? 'Claudeキーが無効。設定で入れ直して'
-           : (err && err.status===400 && /credit|balance/i.test(err.message||'')) ? 'Claudeの残高切れ。console.anthropic.comでチャージして'
+    errMsg = (err&&err.status===401) ? 'Claudeキーが無効。設定で入れ直して'
+           : (err&&err.status===400 && /credit|balance/i.test(err.message||'')) ? 'Claudeの残高切れ。console.anthropic.comでチャージ'
            : 'Claudeエラー: '+((err&&err.message)||err);
   }
   busy=false;
-  if(errMsg){
-    if(pendingEl){ pendingEl.classList.remove('pending'); } // 生のまま残す
-    toast(errMsg, 7000);
-    if(wantLive) maybeResumeListening();
-    return;
-  }
-  // ユーザー吹き出しを補正版に差し替え
-  const corrected = (data.corrected||raw).trim() || raw;
-  if(pendingEl){ pendingEl.textContent = corrected; pendingEl.classList.remove('pending'); }
-  const reply = (data.reply||'').trim();
+  if(errMsg){ if(pendEl) pendEl.classList.remove('pending'); toast(errMsg,7000); if(wantLive) startRecording(); return; }
+  const corrected=(data.corrected||raw).trim()||raw;
+  if(pendEl){ pendEl.textContent=corrected; pendEl.classList.remove('pending'); }
+  const reply=(data.reply||'').trim();
   if(reply) addMsg('ai', reply);
-  // 履歴に積む（補正版を user として）
-  claudeMessages.push({ role:'user', content: corrected });
-  claudeMessages.push({ role:'assistant', content: reply });
-  while(claudeMessages.length>40) claudeMessages.shift(); // 直近20往復
-  // Geminiの声で読み上げ
+  claudeMessages.push({ role:'user', content:corrected }); claudeMessages.push({ role:'assistant', content:reply });
+  while(claudeMessages.length>40) claudeMessages.shift();
   speak(reply);
-}
-
-/* ================== 端末ネイティブ音声認識 ================== */
-const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-let rec=null, recOn=false, wantRec=false;
-
-function buildRec(){
-  if(!SR) return null;
-  const r=new SR();
-  r.lang = state.lang; r.continuous = true; r.interimResults = true;
-  r.onstart = ()=>{ recOn=true; if(wantLive && !busy && !speaking) setMode('listening'); };
-  r.onerror = (e)=>{
-    if(e.error==='not-allowed' || e.error==='service-not-allowed'){ toast('マイクが許可されてない。設定→Safari→マイクを許可して',7000); wantRec=false; }
-  };
-  r.onend = ()=>{ recOn=false; if(wantRec && wantLive && !busy && !speaking){ try{ r.start(); }catch(e){ setTimeout(()=>{try{r.start()}catch(_){}} ,300); } } };
-  r.onresult = (e)=>{
-    let interim='', finalTxt='';
-    for(let i=e.resultIndex;i<e.results.length;i++){
-      const t=e.results[i][0].transcript;
-      if(e.results[i].isFinal) finalTxt+=t; else interim+=t;
-    }
-    if(interim){ interimEl.textContent=interim; setMode('hearing'); }
-    if(finalTxt.trim()){ interimEl.textContent=''; handleUtterance(finalTxt.trim()); }
-  };
-  return r;
-}
-function startRec(){ if(!SR) return; wantRec=true; if(!rec) rec=buildRec(); if(rec && !recOn){ try{ rec.start(); }catch(e){} } if(wantLive && !busy && !speaking) setMode('listening'); }
-function stopRec(){ wantRec=false; if(rec && recOn){ try{ rec.stop(); }catch(e){} } }
-function rebuildRecForLang(){ const was=wantRec; stopRec(); if(rec){ try{rec.abort()}catch(e){} } rec=null; if(was && wantLive) setTimeout(startRec,200); }
-
-function maybeResumeListening(){ if(!wantLive||busy||speaking||playQueue.length) return; startRec(); }
-
-/* 確定発話 → Claudeへ（補正＋返答） */
-function handleUtterance(text){
-  if(!state.claudeKey){ toast('先にClaudeキーを設定して'); return; }
-  if(busy || speaking) return; // 多重発火ガード
-  stopRec();
-  const pendingEl = addMsg('user', text, 'pending'); // まず生テキストを薄く表示
-  askClaude(text, pendingEl);
 }
 
 /* ================== 開始 / 停止 ================== */
 async function startAll(){
   if(!state.claudeKey || !state.geminiKey){ openSetup(); return; }
-  if(!SR){ toast('この端末は音声認識に未対応。下のテキスト欄で会話して',7000); }
-  wantLive=true; ensureSpk();
-  setMode('connecting');
+  wantLive=true; ensureSpk(); setMode('connecting');
   try{
-    await geminiConnect(); // 声（失敗しても会話は続行）
-    try{ wakeLock = await navigator.wakeLock.request('screen'); }catch(e){}
-    startRec();
-    if(!SR) setMode('listening');
-  }catch(e){ console.error(e); toast('音声接続に失敗（会話は続行）: '+(e.message||e)); startRec(); }
+    await micSetup();
+    geminiConnect().catch(()=>{});
+    try{ wakeLock=await navigator.wakeLock.request('screen'); }catch(e){}
+    startRecording();
+  }catch(e){ console.error(e); toast('マイクが使えない。設定→Safari→マイクを許可して',7000); wantLive=false; setMode('idle'); }
 }
 function stopAll(){
-  wantLive=false; speaking=false; busy=false;
-  stopRec(); if(rec){ try{rec.abort()}catch(e){} rec=null; }
-  try{ gSession && gSession.close(); }catch(e){} gSession=null; gReady=false;
-  stopPlayback();
-  try{ wakeLock && wakeLock.release(); }catch(e){} wakeLock=null;
+  wantLive=false; recording=false; speaking=false; busy=false; clearTimeout(speakWatch);
+  try{ micNode&&micNode.disconnect(); }catch(e){}
+  try{ micStream&&micStream.getTracks().forEach(t=>t.stop()); }catch(e){}
+  try{ micCtx&&micCtx.close(); }catch(e){}
+  micStream=micCtx=micNode=null;
+  try{ gSession&&gSession.close(); }catch(e){} gSession=null; gReady=false;
+  stopPlayback(); try{ wakeLock&&wakeLock.release(); }catch(e){} wakeLock=null;
   setMode('idle');
 }
-document.addEventListener('visibilitychange', async ()=>{
-  if(document.visibilityState==='visible' && wantLive && !wakeLock){ try{ wakeLock=await navigator.wakeLock.request('screen'); }catch(e){} }
-});
+document.addEventListener('visibilitychange', async ()=>{ if(document.visibilityState==='visible' && wantLive && !wakeLock){ try{ wakeLock=await navigator.wakeLock.request('screen'); }catch(e){} } });
 
 /* ================== UI ================== */
-function show(id){ $(id).classList.add('show'); }
-function hide(id){ $(id).classList.remove('show'); }
+function show(id){ $(id).classList.add('show'); } function hide(id){ $(id).classList.remove('show'); }
 function openSetup(){ $('claudeKeyIn').value=state.claudeKey; $('geminiKeyIn').value=state.geminiKey; show('setupOv'); }
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('.overlay').classList.remove('show'));
 document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('show'); }));
-
 orb.onclick = ()=>{ (wantLive ? stopAll() : startAll()); };
 
-$('saveSetup').onclick = ()=>{
-  const c=$('claudeKeyIn').value.trim(), g=$('geminiKeyIn').value.trim();
-  if(!c || !g){ toast('ClaudeキーとGeminiキーの両方を入れて'); return; }
-  state.claudeKey=c; state.geminiKey=g;
-  LS.setItem('tm_claude_key',c); LS.setItem('tm_gemini_key',g);
-  initClaude(); hide('setupOv'); toast('保存した。オーブをタップで開始',3000);
-};
+$('saveSetup').onclick=()=>{ const c=$('claudeKeyIn').value.trim(), g=$('geminiKeyIn').value.trim(); if(!c||!g){ toast('両方のキーを入れて'); return; } state.claudeKey=c; state.geminiKey=g; LS.setItem('tm_claude_key',c); LS.setItem('tm_gemini_key',g); hide('setupOv'); toast('保存した。オーブをタップで開始',3000); };
 
-// 言語トグル
-const langBtn=$('langBtn');
-function renderLang(){ if(state.lang==='ja-JP'){ langBtn.textContent='🇯🇵 日本語'; langBtn.classList.remove('en'); } else { langBtn.textContent='🇺🇸 English'; langBtn.classList.add('en'); } }
-langBtn.onclick = ()=>{ state.lang=(state.lang==='ja-JP')?'en-US':'ja-JP'; LS.setItem('tm_lang',state.lang); renderLang(); toast(state.lang==='ja-JP'?'日本語で聞き取り':'英語で聞き取り',2500); rebuildRecForLang(); };
-renderLang();
-
-// 声選択
 const vb=$('voiceBtn');
-function renderVoices(){
-  const el=$('voiceList'); el.innerHTML='';
-  for(const [n,en,jp] of VOICES){
-    const d=document.createElement('div'); d.className='vItem'+(n===state.voice?' sel':'');
-    d.innerHTML=`<span>${n===state.voice?'✓ ':''}${n}</span><small>${en} / ${jp}</small>`;
-    d.onclick=()=>{ state.voice=n; LS.setItem('tm_voice',n); vb.textContent='🎭 '+n; renderVoices(); hide('voiceOv');
-      if(wantLive){ try{gSession&&gSession.close()}catch(e){} } }; // 次の接続で新しい声
-    el.appendChild(d);
-  }
-}
+function renderVoices(){ const el=$('voiceList'); el.innerHTML=''; for(const [n,en,jp] of VOICES){ const d=document.createElement('div'); d.className='vItem'+(n===state.voice?' sel':''); d.innerHTML=`<span>${n===state.voice?'✓ ':''}${n}</span><small>${en} / ${jp}</small>`; d.onclick=()=>{ state.voice=n; LS.setItem('tm_voice',n); vb.textContent='🎭 '+n; renderVoices(); hide('voiceOv'); if(wantLive){ try{gSession&&gSession.close()}catch(e){} } }; el.appendChild(d); } }
 vb.textContent='🎭 '+state.voice;
 $('voiceBtn').onclick=()=>{ renderVoices(); show('voiceOv'); };
 
-// 設定
-const ms=$('modelSel');
-CLAUDE_MODELS.forEach(m=>{ const o=document.createElement('option'); o.value=m.id; o.textContent=m.label; ms.appendChild(o); });
-ms.value=state.model;
-$('settingsBtn').onclick=()=>{ ms.value=state.model; $('claudeKeyIn2').value=''; $('geminiKeyIn2').value=''; show('setOv'); };
-$('saveSet').onclick=()=>{
-  const c=$('claudeKeyIn2').value.trim(), g=$('geminiKeyIn2').value.trim();
-  if(c){ state.claudeKey=c; LS.setItem('tm_claude_key',c); initClaude(); }
-  if(g){ state.geminiKey=g; LS.setItem('tm_gemini_key',g); }
-  if(ms.value!==state.model){ state.model=ms.value; LS.setItem('tm_model',state.model); }
-  hide('setOv'); toast('保存した',2500);
-};
+const ms=$('modelSel'); CLAUDE_MODELS.forEach(m=>{ const o=document.createElement('option'); o.value=m.id; o.textContent=m.label; ms.appendChild(o); }); ms.value=state.model;
+const silSel=$('silSel'); silSel.value=String(state.silence);
+$('settingsBtn').onclick=()=>{ ms.value=state.model; silSel.value=String(state.silence); $('claudeKeyIn2').value=''; $('geminiKeyIn2').value=''; show('setOv'); };
+$('saveSet').onclick=()=>{ const c=$('claudeKeyIn2').value.trim(), g=$('geminiKeyIn2').value.trim(); if(c){ state.claudeKey=c; LS.setItem('tm_claude_key',c); } if(g){ state.geminiKey=g; LS.setItem('tm_gemini_key',g); } if(ms.value!==state.model){ state.model=ms.value; LS.setItem('tm_model',state.model); } state.silence=parseInt(silSel.value); LS.setItem('tm_silence',String(state.silence)); hide('setOv'); toast('保存した',2500); };
 
-// テキスト送信（フォールバック）
-$('textIn').addEventListener('keydown',e=>{
-  if(e.key!=='Enter') return;
-  const v=e.target.value.trim(); if(!v) return; e.target.value='';
-  if(!state.claudeKey){ openSetup(); return; }
-  if(!wantLive){ wantLive=true; ensureSpk(); geminiConnect().catch(()=>{}); }
-  if(busy||speaking){ toast('応答中、少し待って'); return; }
-  const pendingEl = addMsg('user', v, 'pending');
-  askClaude(v, pendingEl);
-});
+$('textIn').addEventListener('keydown',e=>{ if(e.key!=='Enter') return; const v=e.target.value.trim(); if(!v) return; e.target.value=''; if(!state.claudeKey){ openSetup(); return; } if(!wantLive){ wantLive=true; ensureSpk(); geminiConnect().catch(()=>{}); } if(busy||speaking){ toast('応答中、少し待って'); return; } busy=true; const pend=addMsg('user', v, 'pending'); askClaude(v, pend); });
 
 if(!state.claudeKey || !state.geminiKey) openSetup();
 setMode('idle');
