@@ -135,8 +135,9 @@ import { GoogleGenAI, Modality } from 'https://esm.run/@google/genai@1';
 
 /* ================== 設定 ================== */
 const CLAUDE_MODELS = [
-  { id:'claude-sonnet-4-6', label:'Sonnet 4.6（推奨・速くて賢い・安い）' },
-  { id:'claude-opus-4-8',  label:'Opus 4.8（最高品質・高い）' },
+  { id:'claude-sonnet-4-6', label:'Sonnet 4.6（推奨・速い・安い）' },
+  { id:'claude-opus-4-8',  label:'Opus 4.8（高品質・中コスト）' },
+  { id:'claude-fable-5',   label:'Fable 5（最高峰・高コスト・やや遅い）' },
 ];
 const VOICES = [
   ['Puck','Upbeat','元気'],['Achird','Friendly','親しみやすい'],['Sulafat','Warm','温かい'],
@@ -287,7 +288,7 @@ async function askClaude(raw, pendingEl){
         'anthropic-version':'2023-06-01',
         'anthropic-dangerous-direct-browser-access':'true',
       },
-      body: JSON.stringify({ model: state.model, max_tokens:1024, system: CLAUDE_SYSTEM, messages: msgs }),
+      body: JSON.stringify({ model: state.model, max_tokens:2048, system: CLAUDE_SYSTEM, messages: msgs }),
     });
     const j = await res.json().catch(()=>({}));
     if(!res.ok){ const e=new Error((j.error&&j.error.message)||('HTTP '+res.status)); e.status=res.status; throw e; }
