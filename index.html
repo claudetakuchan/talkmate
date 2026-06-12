@@ -22,11 +22,10 @@
   header { padding:14px 18px 6px; display:flex; align-items:center; justify-content:space-between; }
   header h1 { font-size:17px; font-weight:700; letter-spacing:.5px; }
   header h1 span { background:linear-gradient(90deg,#7dd3fc,#c084fc); -webkit-background-clip:text; background-clip:text; color:transparent; }
-  #connState { font-size:11px; color:#8b93a7; }
-  main { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:8px 16px 0; min-height:0; }
+  #connState { font-size:11px; color:#8b93a7; text-align:right; line-height:1.4; }
 
-  /* ---- オーブ ---- */
-  #orbWrap { position:relative; width:160px; height:160px; margin-top:10px; flex-shrink:0; }
+  main { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:8px 16px 0; min-height:0; }
+  #orbWrap { position:relative; width:150px; height:150px; margin-top:8px; flex-shrink:0; }
   #orb {
     position:absolute; inset:0; border-radius:50%;
     background:radial-gradient(circle at 32% 30%, #38bdf8 0%, #6366f1 55%, #1e1b4b 100%);
@@ -41,64 +40,40 @@
   body.listening .ring.r2 { animation-delay:1.1s; }
   @keyframes pulse { 0%{transform:scale(1);opacity:.7} 100%{transform:scale(1.5);opacity:0} }
   body.hearing #orb { box-shadow:0 0 60px rgba(56,189,248,.85); }
+  body.thinking #orb { box-shadow:0 0 65px rgba(251,191,36,.7); background:radial-gradient(circle at 32% 30%, #fbbf24 0%, #b45309 60%, #422006 100%); }
   body.speaking #orb { box-shadow:0 0 70px rgba(192,132,252,.85); background:radial-gradient(circle at 32% 30%, #c084fc 0%, #8b5cf6 55%, #312e81 100%); }
   body.connecting #orb { animation:breathe 1.2s ease-in-out infinite; }
   @keyframes breathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
   #hint { margin-top:12px; font-size:13px; color:#8b93a7; text-align:center; min-height:18px; padding:0 10px; }
   #interim { margin-top:4px; font-size:13px; color:#7dd3fc; text-align:center; min-height:18px; font-style:italic; }
 
-  /* ---- トランスクリプト ---- */
   #transcript {
     flex:1; width:100%; max-width:560px; margin-top:10px; overflow-y:auto;
     -webkit-overflow-scrolling:touch; display:flex; flex-direction:column; gap:8px; padding-bottom:10px; min-height:0;
   }
-  .msg { max-width:86%; padding:9px 13px; border-radius:16px; font-size:14px; line-height:1.5; white-space:pre-wrap; word-break:break-word; }
+  .msg { max-width:86%; padding:9px 13px; border-radius:16px; font-size:14px; line-height:1.5; white-space:pre-wrap; word-break:break-word; transition:opacity .2s; }
   .msg.user { align-self:flex-end; background:#1d4ed8; border-bottom-right-radius:5px; }
+  .msg.user.pending { opacity:.45; font-style:italic; }
   .msg.ai { align-self:flex-start; background:#1f2637; border-bottom-left-radius:5px; }
 
   footer { padding:10px 14px 14px; display:flex; gap:8px; align-items:center; }
-  .chip {
-    background:#1f2637; border:1px solid #2e3850; color:#e8ecf4; border-radius:14px;
-    padding:10px 12px; font-size:13px; cursor:pointer; white-space:nowrap;
-  }
-  #textIn {
-    flex:1; min-width:0; background:#141a2a; border:1px solid #2e3850; border-radius:14px;
-    padding:10px 13px; font-size:16px; color:#e8ecf4; outline:none;
-  }
+  .chip { background:#1f2637; border:1px solid #2e3850; color:#e8ecf4; border-radius:14px; padding:10px 12px; font-size:13px; cursor:pointer; white-space:nowrap; }
+  #textIn { flex:1; min-width:0; background:#141a2a; border:1px solid #2e3850; border-radius:14px; padding:10px 13px; font-size:16px; color:#e8ecf4; outline:none; }
 
-  /* ---- オーバーレイ ---- */
-  .overlay {
-    position:fixed; inset:0; background:rgba(5,8,16,.82); backdrop-filter:blur(6px);
-    display:none; align-items:flex-end; justify-content:center; z-index:50;
-  }
+  .overlay { position:fixed; inset:0; background:rgba(5,8,16,.82); backdrop-filter:blur(6px); display:none; align-items:flex-end; justify-content:center; z-index:50; }
   .overlay.show { display:flex; }
-  .sheet {
-    background:#121829; border-radius:20px 20px 0 0; width:100%; max-width:600px;
-    max-height:82vh; overflow-y:auto; -webkit-overflow-scrolling:touch;
-    padding:20px 18px calc(22px + env(safe-area-inset-bottom));
-  }
+  .sheet { background:#121829; border-radius:20px 20px 0 0; width:100%; max-width:600px; max-height:86vh; overflow-y:auto; -webkit-overflow-scrolling:touch; padding:20px 18px calc(22px + env(safe-area-inset-bottom)); }
   .sheet h2 { font-size:16px; margin-bottom:12px; }
   .sheet p { font-size:13px; color:#a7afc4; line-height:1.7; margin-bottom:10px; }
-  .sheet input, .sheet select {
-    width:100%; background:#0d1322; border:1px solid #2e3850; border-radius:12px;
-    padding:12px; font-size:16px; color:#e8ecf4; margin-bottom:12px; outline:none;
-  }
-  .btnPrimary {
-    width:100%; background:linear-gradient(90deg,#2563eb,#7c3aed); color:#fff; border:none;
-    border-radius:12px; padding:13px; font-size:15px; font-weight:700; cursor:pointer;
-  }
+  .sheet label { font-size:12px; color:#8b93a7; display:block; margin:12px 0 5px; }
+  .sheet input, .sheet select { width:100%; background:#0d1322; border:1px solid #2e3850; border-radius:12px; padding:12px; font-size:16px; color:#e8ecf4; margin-bottom:6px; outline:none; }
+  .ok { color:#34d399; } .bad { color:#f87171; }
+  .btnPrimary { width:100%; background:linear-gradient(90deg,#2563eb,#7c3aed); color:#fff; border:none; border-radius:12px; padding:13px; font-size:15px; font-weight:700; cursor:pointer; margin-top:10px; }
   .btnGhost { width:100%; background:none; border:none; color:#8b93a7; padding:12px; font-size:13px; cursor:pointer; }
-  .vItem {
-    display:flex; justify-content:space-between; align-items:center;
-    padding:11px 6px; border-bottom:1px solid #1e2536; cursor:pointer; font-size:14px;
-  }
+  .vItem { display:flex; justify-content:space-between; align-items:center; padding:11px 6px; border-bottom:1px solid #1e2536; cursor:pointer; font-size:14px; }
   .vItem small { color:#8b93a7; font-size:12px; }
   .vItem.sel { color:#7dd3fc; font-weight:700; }
-  #toast {
-    position:fixed; top:calc(12px + env(safe-area-inset-top)); left:50%; transform:translateX(-50%);
-    background:#7f1d1d; color:#fff; padding:9px 16px; border-radius:12px; font-size:13px;
-    display:none; z-index:99; max-width:90%; text-align:center;
-  }
+  #toast { position:fixed; top:calc(12px + env(safe-area-inset-top)); left:50%; transform:translateX(-50%); background:#7f1d1d; color:#fff; padding:9px 16px; border-radius:12px; font-size:13px; display:none; z-index:99; max-width:90%; text-align:center; }
   .langBtn.en { color:#fbbf24; }
 </style>
 </head>
@@ -108,10 +83,7 @@
   <div id="connState">未接続</div>
 </header>
 <main>
-  <div id="orbWrap">
-    <div class="ring"></div><div class="ring r2"></div>
-    <div id="orb">話す</div>
-  </div>
+  <div id="orbWrap"><div class="ring"></div><div class="ring r2"></div><div id="orb">話す</div></div>
   <div id="hint">タップして会話開始</div>
   <div id="interim"></div>
   <div id="transcript"></div>
@@ -125,14 +97,17 @@
 
 <div class="overlay" id="setupOv"><div class="sheet">
   <h2>🔑 初回セットアップ</h2>
-  <p>Gemini APIキーを貼り付けて保存（クラウドからもらったやつ）。キーはこのiPhoneの中にだけ保存される。</p>
-  <input id="keyIn" placeholder="AIza..." autocomplete="off">
-  <button class="btnPrimary" id="saveKey">保存して始める</button>
-  <p style="margin-top:10px">自分で作る場合: aistudio.google.com/apikey → Create API key</p>
+  <p>キーは2つ。どちらもこのiPhoneの中にだけ保存される（外には出ない）。</p>
+  <label>🧠 Claude APIキー（頭脳・必須） — sk-ant-...</label>
+  <input id="claudeKeyIn" placeholder="sk-ant-..." autocomplete="off">
+  <label>🔊 Gemini APIキー（声・必須） — AIza...</label>
+  <input id="geminiKeyIn" placeholder="AIza..." autocomplete="off">
+  <button class="btnPrimary" id="saveSetup">保存して始める</button>
+  <p style="margin-top:12px">Claudeキー＝console.anthropic.com の API keys / Geminiキー＝クラウドからもらったやつ</p>
 </div></div>
 
 <div class="overlay" id="voiceOv"><div class="sheet">
-  <h2>🎭 声を選ぶ（30種）</h2>
+  <h2>🎭 声を選ぶ（30種・Gemini）</h2>
   <p>選ぶと次の返答から切り替わる。</p>
   <div id="voiceList"></div>
   <button class="btnGhost" data-close>閉じる</button>
@@ -140,13 +115,15 @@
 
 <div class="overlay" id="setOv"><div class="sheet">
   <h2>⚙️ 設定</h2>
-  <p>モデル</p>
+  <label>🧠 頭脳モデル（Claude）</label>
   <select id="modelSel"></select>
-  <p>APIキー変更</p>
-  <input id="keyIn2" placeholder="現在のキーを使用中" autocomplete="off">
+  <label>🧠 Claude APIキー（変更）</label>
+  <input id="claudeKeyIn2" placeholder="現在のキーを使用中" autocomplete="off">
+  <label>🔊 Gemini APIキー（変更）</label>
+  <input id="geminiKeyIn2" placeholder="現在のキーを使用中" autocomplete="off">
   <button class="btnPrimary" id="saveSet">保存</button>
-  <p style="margin-top:14px"><b>使い方</b><br>オーブをタップ→喋るだけ。iPhoneの音声認識で文字にしてからAIに渡すので、ちゃんと聞き取れる。AIが喋り終わると自動でまた聞き取りに戻る（ターン制）。<br><br>🇯🇵/🇺🇸ボタンで認識する言語を切替（英会話練習は🇺🇸に）。マイクは初回だけ許可が要る。</p>
-  <p id="verLine" style="color:#5b6378">TalkMate P1.1 (端末音声認識版)</p>
+  <p style="margin-top:14px"><b>仕組み</b><br>喋る→iPhoneが文字化→<b>Claudeが文脈で誤認識を直す</b>（あなたの吹き出しが直った文に変わる）→Claudeが返答→<b>Geminiの声</b>で読み上げ。AIが喋り終わると自動でまた聞き取りに戻る。</p>
+  <p id="verLine" style="color:#5b6378">TalkMate P2 (Claude頭脳 + Gemini音声)</p>
   <button class="btnGhost" data-close>閉じる</button>
 </div></div>
 
@@ -154,11 +131,12 @@
 
 <script type="module">
 import { GoogleGenAI, Modality } from 'https://esm.run/@google/genai@1';
+// Claudeは fetch 直叩き（ブラウザのNode依存問題を避ける）。anthropic-dangerous-direct-browser-access で CORS許可
 
 /* ================== 設定 ================== */
-const MODELS = [
-  { id:'gemini-2.5-flash-native-audio-preview-12-2025', label:'2.5 ネイティブ音声（推奨・声30種）' },
-  { id:'gemini-3.1-flash-live-preview', label:'3.1 Flash Live（最新プレビュー）' },
+const CLAUDE_MODELS = [
+  { id:'claude-sonnet-4-6', label:'Sonnet 4.6（推奨・速くて賢い・安い）' },
+  { id:'claude-opus-4-8',  label:'Opus 4.8（最高品質・高い）' },
 ];
 const VOICES = [
   ['Puck','Upbeat','元気'],['Achird','Friendly','親しみやすい'],['Sulafat','Warm','温かい'],
@@ -172,40 +150,50 @@ const VOICES = [
   ['Charon','Informative','解説調'],['Rasalgethi','Informative','知的'],['Sadaltager','Knowledgeable','物知り'],
   ['Fenrir','Excitable','テンション高め'],['Enceladus','Breathy','吐息まじり'],['Algenib','Gravelly','ハスキー'],
 ];
-const SYSTEM_PROMPT = `You are TalkMate, a warm and sharp voice conversation partner having a spoken conversation.
-- The user's messages come from speech-to-text, so they may contain recognition errors, missing punctuation, or odd homophones. Infer the intended meaning from context and respond naturally. Never nitpick the transcription.
-- Mirror the user's language: if they speak Japanese, reply in Japanese; if English, reply in English.
-- Keep replies short and conversational (usually 1-3 sentences), since this is spoken aloud. Be direct and concrete. No filler, no lectures, no markdown, no emoji.
-- React like a human friend would.`;
+// Geminiは「読み上げ専用ロボット」に徹させる
+const GEMINI_TTS_SYSTEM = `You are a text-to-speech voice engine, not a conversational AI. Read aloud the user's message EXACTLY as written, verbatim, in a natural friendly human voice. Never answer it, never comment, never translate, never add or omit anything. Your only job is to speak the provided text as-is.`;
+// Claudeが頭脳。発話補正＋返答を1回で返す
+const CLAUDE_SYSTEM = `You are TalkMate, a warm, sharp, bilingual voice companion — like a smart, easygoing friend. You are having a spoken conversation with the user (Taku).
+
+The user's incoming message is RAW speech-to-text from a phone microphone. It may contain recognition errors, wrong homophones, dropped particles, missing punctuation, or words merged/split incorrectly.
+
+Each turn, do two things:
+1. "corrected" — Rewrite the user's utterance into what they most likely actually said. Use the conversation context to fix recognition errors and add natural punctuation. Keep their original language and intent. This is a cleanup, not an answer.
+2. "reply" — Your spoken response to the corrected utterance. Mirror the user's language (Japanese in → Japanese out, English in → English out). Keep it short and natural (usually 1-3 sentences) since it will be read aloud. No markdown, no emoji, no bullet lists, no headings.
+
+Output ONLY a single JSON object, with no text before or after it:
+{"corrected": "<cleaned-up user utterance>", "reply": "<your spoken reply>"}`;
 
 const LS = localStorage;
 const state = {
-  key:   LS.getItem('tm_key')   || '',
+  claudeKey: LS.getItem('tm_claude_key') || '',
+  geminiKey: LS.getItem('tm_gemini_key') || LS.getItem('tm_key') || '', // 旧キー名から移行
+  model: LS.getItem('tm_model') || CLAUDE_MODELS[0].id,
   voice: LS.getItem('tm_voice') || 'Puck',
-  model: LS.getItem('tm_model') || MODELS[0].id,
   lang:  LS.getItem('tm_lang')  || 'ja-JP',
 };
+if(!CLAUDE_MODELS.some(m=>m.id===state.model)) state.model = CLAUDE_MODELS[0].id; // 旧Geminiモデル名の掃除
 
 /* ================== DOM ================== */
 const $ = id => document.getElementById(id);
 const orb=$('orb'), hint=$('hint'), interimEl=$('interim'), connState=$('connState'), transcript=$('transcript');
 function toast(m,ms){ const t=$('toast'); t.textContent=m; t.style.display='block'; clearTimeout(t._h); t._h=setTimeout(()=>t.style.display='none',ms||5000); }
-
-function setMode(mode){ // idle / connecting / listening / hearing / speaking
+function setMode(mode){
   document.body.className = (mode==='idle') ? '' : mode;
   const map = {
-    idle:        ['話す','タップして会話開始','未接続'],
-    connecting:  ['…','接続中…','接続中'],
-    listening:   ['🎤','聞いてるよ、どうぞ','会話中✓'],
-    hearing:     ['🎤','聞き取り中…','会話中✓'],
-    speaking:    ['🔊','AIが話し中…','会話中✓'],
+    idle:[ '話す','タップして会話開始','未接続'],
+    connecting:['…','接続中…','接続中'],
+    listening:['🎤','聞いてるよ、どうぞ','会話中✓'],
+    hearing:['🎤','聞き取り中…','会話中✓'],
+    thinking:['💭','考えてる…','会話中✓'],
+    speaking:['🔊','話し中…','会話中✓'],
   };
   const m = map[mode]||map.idle;
   orb.textContent=m[0]; hint.textContent=m[1]; connState.textContent=m[2];
   if(mode!=='hearing') interimEl.textContent='';
 }
 
-/* ================== 音声出力（Live APIの音声を再生） ================== */
+/* ================== Gemini 音声出力（読み上げ専用） ================== */
 let spkCtx=null, playQueue=[], nextT=0;
 function ensureSpk(){ if(!spkCtx) spkCtx=new (window.AudioContext||window.webkitAudioContext)(); if(spkCtx.state==='suspended') spkCtx.resume(); }
 function b64ToI16(b64){ const bin=atob(b64); const u8=new Uint8Array(bin.length); for(let i=0;i<bin.length;i++)u8[i]=bin.charCodeAt(i); return new Int16Array(u8.buffer); }
@@ -218,104 +206,132 @@ function playChunk(b64){
   const s=spkCtx.createBufferSource(); s.buffer=buf; s.connect(spkCtx.destination);
   const t=Math.max(spkCtx.currentTime+0.05, nextT);
   s.start(t); nextT=t+buf.duration; playQueue.push(s);
-  s.onended=()=>{ playQueue=playQueue.filter(x=>x!==s); if(!playQueue.length) onPlaybackDrained(); };
+  s.onended=()=>{ playQueue=playQueue.filter(x=>x!==s); if(!playQueue.length) onSpeakDone(); };
   setMode('speaking');
 }
 function stopPlayback(){ playQueue.forEach(s=>{try{s.stop()}catch(e){}}); playQueue=[]; nextT=0; }
 
 /* ================== トランスクリプト ================== */
-let curEl=null, curRole=null;
-function appendTr(role, text){
-  if(!text) return;
-  if(!curEl || curRole!==role){
-    curEl=document.createElement('div'); curEl.className='msg '+role; curEl.textContent=''; curRole=role;
-    transcript.appendChild(curEl);
-    while(transcript.children.length>60) transcript.removeChild(transcript.firstChild);
-  }
-  curEl.textContent += text;
+function addMsg(role, text, cls){
+  const d=document.createElement('div'); d.className='msg '+role+(cls?' '+cls:''); d.textContent=text;
+  transcript.appendChild(d);
+  while(transcript.children.length>80) transcript.removeChild(transcript.firstChild);
   transcript.scrollTop = transcript.scrollHeight;
+  return d;
 }
-function breakTr(){ curEl=null; curRole=null; }
 
-/* ================== Live セッション（音声出力＋頭脳） ================== */
-let ai=null, session=null, sessionReady=false, wantLive=false, resumeHandle=null, reconnects=0, wakeLock=null;
-let turnDone=true;          // AIの応答ターンが完了したか
-let awaitingResponse=false; // 送信後、応答受信中（この間は認識しない）
+/* ================== Gemini Live（読み上げ用セッション） ================== */
+let ai=null, gSession=null, gReady=false, wantLive=false, reconnects=0, wakeLock=null;
+let speaking=false;
 
-async function connect(){
-  setMode('connecting');
-  ai = new GoogleGenAI({ apiKey: state.key });
-  const config = {
-    responseModalities:[Modality.AUDIO],
-    speechConfig:{ voiceConfig:{ prebuiltVoiceConfig:{ voiceName: state.voice } } },
-    systemInstruction: SYSTEM_PROMPT,
-    outputAudioTranscription:{},
-    contextWindowCompression:{ slidingWindow:{} },
-    sessionResumption: resumeHandle ? { handle: resumeHandle } : {},
-  };
-  session = await ai.live.connect({
-    model: state.model, config,
+async function geminiConnect(){
+  ai = new GoogleGenAI({ apiKey: state.geminiKey });
+  gSession = await ai.live.connect({
+    model:'gemini-2.5-flash-native-audio-preview-12-2025',
+    config:{
+      responseModalities:[Modality.AUDIO],
+      speechConfig:{ voiceConfig:{ prebuiltVoiceConfig:{ voiceName: state.voice } } },
+      systemInstruction: GEMINI_TTS_SYSTEM,
+    },
     callbacks:{
-      onopen: ()=>{ reconnects=0; sessionReady=true; },
-      onmessage: handleMsg,
-      onerror: e=>{ console.error(e); toast('接続エラー: '+(e.message||e)); },
-      onclose: ev=>{
-        sessionReady=false; session=null;
-        if(wantLive){
-          if(reconnects++ < 4){ setMode('connecting'); setTimeout(()=>{ if(wantLive) connect().catch(connFail); }, 700); }
-          else { stopAll(); toast('接続が切れた。もう一度タップして再開して'); }
-        }
+      onopen: ()=>{ gReady=true; reconnects=0; },
+      onmessage: m=>{
+        const sc=m.serverContent; if(!sc) return;
+        const parts=(sc.modelTurn&&sc.modelTurn.parts)||[];
+        for(const p of parts){ if(p.inlineData&&p.inlineData.data) playChunk(p.inlineData.data); }
+        if(sc.turnComplete && !playQueue.length) onSpeakDone();
       },
+      onerror: e=>{ console.error(e); toast('音声(Gemini)エラー: '+(e.message||e)); },
+      onclose: ()=>{ gReady=false; gSession=null;
+        if(wantLive && reconnects++<4){ setTimeout(()=>{ if(wantLive) geminiConnect().catch(()=>{}); }, 600); } },
     },
   });
 }
-function connFail(e){ console.error(e); wantLive=false; teardown(); setMode('idle'); toast('接続失敗: '+(e.message||e)); }
-
-function handleMsg(m){
-  if(m.sessionResumptionUpdate){
-    if(m.sessionResumptionUpdate.resumable && m.sessionResumptionUpdate.newHandle) resumeHandle=m.sessionResumptionUpdate.newHandle;
-  }
-  const sc=m.serverContent; if(!sc) return;
-  if(sc.outputTranscription && sc.outputTranscription.text) appendTr('ai', sc.outputTranscription.text);
-  const parts=(sc.modelTurn&&sc.modelTurn.parts)||[];
-  for(const p of parts){ if(p.inlineData && p.inlineData.data) playChunk(p.inlineData.data); }
-  if(sc.turnComplete){ turnDone=true; breakTr(); maybeResumeListening(); }
+function speak(text){
+  if(!text) { onSpeakDone(); return; }
+  speaking=true; setMode('speaking');
+  if(gSession && gReady){
+    try{ gSession.sendClientContent({ turns:[{ role:'user', parts:[{ text }] }], turnComplete:true }); }
+    catch(e){ onSpeakDone(); }
+  } else { onSpeakDone(); } // Gemini未接続でも会話は続行（無音）
+}
+function onSpeakDone(){
+  if(!speaking) return;
+  speaking=false;
+  if(wantLive) maybeResumeListening();
 }
 
-/* 応答音声を再生し切ったら認識を再開 */
-function onPlaybackDrained(){ if(turnDone) maybeResumeListening(); }
-function maybeResumeListening(){
-  if(!wantLive) return;
-  if(!turnDone) return;
-  if(playQueue.length) return;       // まだ喋ってる
-  awaitingResponse=false;
-  startRec();
+/* ================== Claude 頭脳 ================== */
+let claudeMessages=[]; // {role:'user'|'assistant', content:string}
+let busy=false;
+function initClaude(){ /* fetch直叩きなので初期化不要 */ }
+
+function parseClaude(text){
+  // JSONを取り出す（前後にゴミがあっても拾う）
+  try{ return JSON.parse(text); }catch(e){}
+  const m = text.match(/\{[\s\S]*\}/);
+  if(m){ try{ return JSON.parse(m[0]); }catch(e){} }
+  return null;
+}
+
+async function askClaude(raw, pendingEl){
+  busy=true; setMode('thinking');
+  const msgs = claudeMessages.concat([{ role:'user', content: raw }]);
+  let data=null, errMsg='';
+  try{
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{
+        'content-type':'application/json',
+        'x-api-key': state.claudeKey,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true',
+      },
+      body: JSON.stringify({ model: state.model, max_tokens:1024, system: CLAUDE_SYSTEM, messages: msgs }),
+    });
+    const j = await res.json().catch(()=>({}));
+    if(!res.ok){ const e=new Error((j.error&&j.error.message)||('HTTP '+res.status)); e.status=res.status; throw e; }
+    const txt = (j.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
+    data = parseClaude(txt);
+    if(!data) data = { corrected: raw, reply: txt.slice(0,500) }; // パース失敗時フォールバック
+  }catch(err){
+    errMsg = (err && err.status===401) ? 'Claudeキーが無効。設定で入れ直して'
+           : (err && err.status===400 && /credit|balance/i.test(err.message||'')) ? 'Claudeの残高切れ。console.anthropic.comでチャージして'
+           : 'Claudeエラー: '+((err&&err.message)||err);
+  }
+  busy=false;
+  if(errMsg){
+    if(pendingEl){ pendingEl.classList.remove('pending'); } // 生のまま残す
+    toast(errMsg, 7000);
+    if(wantLive) maybeResumeListening();
+    return;
+  }
+  // ユーザー吹き出しを補正版に差し替え
+  const corrected = (data.corrected||raw).trim() || raw;
+  if(pendingEl){ pendingEl.textContent = corrected; pendingEl.classList.remove('pending'); }
+  const reply = (data.reply||'').trim();
+  if(reply) addMsg('ai', reply);
+  // 履歴に積む（補正版を user として）
+  claudeMessages.push({ role:'user', content: corrected });
+  claudeMessages.push({ role:'assistant', content: reply });
+  while(claudeMessages.length>40) claudeMessages.shift(); // 直近20往復
+  // Geminiの声で読み上げ
+  speak(reply);
 }
 
 /* ================== 端末ネイティブ音声認識 ================== */
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-let rec=null, recOn=false, wantRec=false, lastFinalAt=0;
+let rec=null, recOn=false, wantRec=false;
 
 function buildRec(){
   if(!SR) return null;
   const r=new SR();
-  r.lang = state.lang;
-  r.continuous = true;
-  r.interimResults = true;
-  r.onstart = ()=>{ recOn=true; if(wantLive && !awaitingResponse && !playQueue.length){ setMode('listening'); } };
+  r.lang = state.lang; r.continuous = true; r.interimResults = true;
+  r.onstart = ()=>{ recOn=true; if(wantLive && !busy && !speaking) setMode('listening'); };
   r.onerror = (e)=>{
-    if(e.error==='not-allowed' || e.error==='service-not-allowed'){
-      toast('マイクが許可されてない。設定→Safari→マイクを許可して', 7000);
-      wantRec=false;
-    } else if(e.error==='no-speech' || e.error==='aborted' || e.error==='network'){
-      // 無視（onendで再起動）
-    }
+    if(e.error==='not-allowed' || e.error==='service-not-allowed'){ toast('マイクが許可されてない。設定→Safari→マイクを許可して',7000); wantRec=false; }
   };
-  r.onend = ()=>{
-    recOn=false;
-    // 会話中で、応答待ちでなければ自動再起動（iOSは継続認識が途切れるため）
-    if(wantRec && wantLive && !awaitingResponse){ try{ r.start(); }catch(e){ setTimeout(()=>{ try{r.start()}catch(_){} }, 300); } }
-  };
+  r.onend = ()=>{ recOn=false; if(wantRec && wantLive && !busy && !speaking){ try{ r.start(); }catch(e){ setTimeout(()=>{try{r.start()}catch(_){}} ,300); } } };
   r.onresult = (e)=>{
     let interim='', finalTxt='';
     for(let i=e.resultIndex;i<e.results.length;i++){
@@ -327,82 +343,67 @@ function buildRec(){
   };
   return r;
 }
-function startRec(){
-  if(!SR){ return; }
-  wantRec=true;
-  if(!rec) rec=buildRec();
-  if(rec && !recOn){ try{ rec.start(); }catch(e){ /* already starting */ } }
-  if(wantLive && !awaitingResponse && !playQueue.length) setMode('listening');
-}
+function startRec(){ if(!SR) return; wantRec=true; if(!rec) rec=buildRec(); if(rec && !recOn){ try{ rec.start(); }catch(e){} } if(wantLive && !busy && !speaking) setMode('listening'); }
 function stopRec(){ wantRec=false; if(rec && recOn){ try{ rec.stop(); }catch(e){} } }
-function rebuildRecForLang(){ // 言語変更時は作り直し
-  const wasOn=wantRec; stopRec();
-  if(rec){ try{ rec.abort(); }catch(e){} }
-  rec=null;
-  if(wasOn && wantLive) setTimeout(startRec, 200);
-}
+function rebuildRecForLang(){ const was=wantRec; stopRec(); if(rec){ try{rec.abort()}catch(e){} } rec=null; if(was && wantLive) setTimeout(startRec,200); }
 
-/* 確定した発話をGeminiへ送る */
+function maybeResumeListening(){ if(!wantLive||busy||speaking||playQueue.length) return; startRec(); }
+
+/* 確定発話 → Claudeへ（補正＋返答） */
 function handleUtterance(text){
-  if(!sessionReady || !session){ return; }
-  // 認識を止めて応答を待つ（AIの声を拾わない）
-  awaitingResponse=true; turnDone=false;
+  if(!state.claudeKey){ toast('先にClaudeキーを設定して'); return; }
+  if(busy || speaking) return; // 多重発火ガード
   stopRec();
-  appendTr('user', text); breakTr();
-  try{
-    session.sendClientContent({ turns:[{ role:'user', parts:[{ text }] }], turnComplete:true });
-    setMode('speaking');
-  }catch(err){ toast('送信エラー、もう一度話して'); awaitingResponse=false; turnDone=true; startRec(); }
+  const pendingEl = addMsg('user', text, 'pending'); // まず生テキストを薄く表示
+  askClaude(text, pendingEl);
 }
 
 /* ================== 開始 / 停止 ================== */
 async function startAll(){
-  if(!state.key){ show('setupOv'); return; }
-  if(!SR){ toast('この端末は音声認識に未対応。下のテキスト欄で会話して', 7000); }
+  if(!state.claudeKey || !state.geminiKey){ openSetup(); return; }
+  if(!SR){ toast('この端末は音声認識に未対応。下のテキスト欄で会話して',7000); }
   wantLive=true; ensureSpk();
+  setMode('connecting');
   try{
-    await connect();
+    await geminiConnect(); // 声（失敗しても会話は続行）
     try{ wakeLock = await navigator.wakeLock.request('screen'); }catch(e){}
     startRec();
     if(!SR) setMode('listening');
-  }catch(e){ connFail(e); }
+  }catch(e){ console.error(e); toast('音声接続に失敗（会話は続行）: '+(e.message||e)); startRec(); }
 }
-function teardown(){
+function stopAll(){
+  wantLive=false; speaking=false; busy=false;
   stopRec(); if(rec){ try{rec.abort()}catch(e){} rec=null; }
-  try{ session && session.close(); }catch(e){} session=null; sessionReady=false;
+  try{ gSession && gSession.close(); }catch(e){} gSession=null; gReady=false;
   stopPlayback();
   try{ wakeLock && wakeLock.release(); }catch(e){} wakeLock=null;
+  setMode('idle');
 }
-function stopAll(){ wantLive=false; resumeHandle=null; awaitingResponse=false; turnDone=true; teardown(); setMode('idle'); breakTr(); }
-
 document.addEventListener('visibilitychange', async ()=>{
-  if(document.visibilityState==='visible' && wantLive && !wakeLock){
-    try{ wakeLock = await navigator.wakeLock.request('screen'); }catch(e){}
-  }
+  if(document.visibilityState==='visible' && wantLive && !wakeLock){ try{ wakeLock=await navigator.wakeLock.request('screen'); }catch(e){} }
 });
 
-/* ================== UI 配線 ================== */
+/* ================== UI ================== */
 function show(id){ $(id).classList.add('show'); }
 function hide(id){ $(id).classList.remove('show'); }
+function openSetup(){ $('claudeKeyIn').value=state.claudeKey; $('geminiKeyIn').value=state.geminiKey; show('setupOv'); }
 document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>b.closest('.overlay').classList.remove('show'));
 document.querySelectorAll('.overlay').forEach(o=>o.addEventListener('click',e=>{ if(e.target===o) o.classList.remove('show'); }));
 
 orb.onclick = ()=>{ (wantLive ? stopAll() : startAll()); };
 
-$('saveKey').onclick = ()=>{ const v=$('keyIn').value.trim(); if(!v) return; state.key=v; LS.setItem('tm_key',v); hide('setupOv'); toast('保存した。オーブをタップで開始',3000); };
+$('saveSetup').onclick = ()=>{
+  const c=$('claudeKeyIn').value.trim(), g=$('geminiKeyIn').value.trim();
+  if(!c || !g){ toast('ClaudeキーとGeminiキーの両方を入れて'); return; }
+  state.claudeKey=c; state.geminiKey=g;
+  LS.setItem('tm_claude_key',c); LS.setItem('tm_gemini_key',g);
+  initClaude(); hide('setupOv'); toast('保存した。オーブをタップで開始',3000);
+};
 
 // 言語トグル
 const langBtn=$('langBtn');
-function renderLang(){
-  if(state.lang==='ja-JP'){ langBtn.textContent='🇯🇵 日本語'; langBtn.classList.remove('en'); }
-  else { langBtn.textContent='🇺🇸 English'; langBtn.classList.add('en'); }
-}
-langBtn.onclick = ()=>{
-  state.lang = (state.lang==='ja-JP') ? 'en-US' : 'ja-JP';
-  LS.setItem('tm_lang', state.lang); renderLang();
-  toast(state.lang==='ja-JP'?'日本語で聞き取り':'英語で聞き取り',2500);
-  rebuildRecForLang();
-};
+function renderLang(){ if(state.lang==='ja-JP'){ langBtn.textContent='🇯🇵 日本語'; langBtn.classList.remove('en'); } else { langBtn.textContent='🇺🇸 English'; langBtn.classList.add('en'); } }
+langBtn.onclick = ()=>{ state.lang=(state.lang==='ja-JP')?'en-US':'ja-JP'; LS.setItem('tm_lang',state.lang); renderLang(); toast(state.lang==='ja-JP'?'日本語で聞き取り':'英語で聞き取り',2500); rebuildRecForLang(); };
 renderLang();
 
 // 声選択
@@ -410,11 +411,10 @@ const vb=$('voiceBtn');
 function renderVoices(){
   const el=$('voiceList'); el.innerHTML='';
   for(const [n,en,jp] of VOICES){
-    const d=document.createElement('div');
-    d.className='vItem'+(n===state.voice?' sel':'');
+    const d=document.createElement('div'); d.className='vItem'+(n===state.voice?' sel':'');
     d.innerHTML=`<span>${n===state.voice?'✓ ':''}${n}</span><small>${en} / ${jp}</small>`;
     d.onclick=()=>{ state.voice=n; LS.setItem('tm_voice',n); vb.textContent='🎭 '+n; renderVoices(); hide('voiceOv');
-      resumeHandle=null; if(wantLive){ try{session&&session.close()}catch(e){} } };
+      if(wantLive){ try{gSession&&gSession.close()}catch(e){} } }; // 次の接続で新しい声
     el.appendChild(d);
   }
 }
@@ -423,26 +423,29 @@ $('voiceBtn').onclick=()=>{ renderVoices(); show('voiceOv'); };
 
 // 設定
 const ms=$('modelSel');
-MODELS.forEach(m=>{ const o=document.createElement('option'); o.value=m.id; o.textContent=m.label; ms.appendChild(o); });
+CLAUDE_MODELS.forEach(m=>{ const o=document.createElement('option'); o.value=m.id; o.textContent=m.label; ms.appendChild(o); });
 ms.value=state.model;
-$('settingsBtn').onclick=()=>{ ms.value=state.model; show('setOv'); };
+$('settingsBtn').onclick=()=>{ ms.value=state.model; $('claudeKeyIn2').value=''; $('geminiKeyIn2').value=''; show('setOv'); };
 $('saveSet').onclick=()=>{
-  const k=$('keyIn2').value.trim(); if(k){ state.key=k; LS.setItem('tm_key',k); }
-  if(ms.value!==state.model){ state.model=ms.value; LS.setItem('tm_model',state.model); resumeHandle=null; if(wantLive){ try{session&&session.close()}catch(e){} } }
+  const c=$('claudeKeyIn2').value.trim(), g=$('geminiKeyIn2').value.trim();
+  if(c){ state.claudeKey=c; LS.setItem('tm_claude_key',c); initClaude(); }
+  if(g){ state.geminiKey=g; LS.setItem('tm_gemini_key',g); }
+  if(ms.value!==state.model){ state.model=ms.value; LS.setItem('tm_model',state.model); }
   hide('setOv'); toast('保存した',2500);
 };
 
-// テキスト送信（フォールバック／静かな場所用）
+// テキスト送信（フォールバック）
 $('textIn').addEventListener('keydown',e=>{
   if(e.key!=='Enter') return;
-  const v=e.target.value.trim(); if(!v) return;
-  e.target.value='';
-  if(!wantLive){ startAll(); setTimeout(()=>handleUtterance(v), 800); return; }
-  if(!sessionReady){ toast('接続中、少し待って'); return; }
-  handleUtterance(v);
+  const v=e.target.value.trim(); if(!v) return; e.target.value='';
+  if(!state.claudeKey){ openSetup(); return; }
+  if(!wantLive){ wantLive=true; ensureSpk(); geminiConnect().catch(()=>{}); }
+  if(busy||speaking){ toast('応答中、少し待って'); return; }
+  const pendingEl = addMsg('user', v, 'pending');
+  askClaude(v, pendingEl);
 });
 
-if(!state.key) show('setupOv');
+if(!state.claudeKey || !state.geminiKey) openSetup();
 setMode('idle');
 </script>
 </body>
